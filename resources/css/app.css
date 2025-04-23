@@ -1,0 +1,17 @@
+/* Garante que a altura mínima da página seja 100% da tela */
+body, html {
+    height: 100%;
+    margin: 0;
+
+}
+
+/* Faz o conteúdo ocupar todo o espaço disponível e empurrar o rodapé para baixo */
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+footer {
+    margin-top: auto;
+}
