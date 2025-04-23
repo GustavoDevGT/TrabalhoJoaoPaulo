@@ -35,14 +35,25 @@ class LoginController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('dashboard');
+        return redirect()->route('produtos.index');
 
 
     }
 
-    public function logout()
-    {
-        Auth::logout();
-        return redirect()->route('login'); // Redireciona para a página de login
-    }
+    public function logout(Request $request)
+{
+    Auth::logout(); // Faz o logout do usuário
+
+    // Limpa a sessão e gera um novo token de CSRF
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    // Força que a página não seja armazenada em cache
+    return redirect()->route('login')->withHeaders([
+        'Cache-Control' => 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma' => 'no-cache',
+        'Expires' => '0',
+    ]);
 }
+}
+

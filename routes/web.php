@@ -22,9 +22,9 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login.for
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 // Rota para o dashboard protegida por middleware de autenticação
-Route::middleware(['auth'])->get('/dashboard', function () {
-    return view('dashboard'); // Certifique-se de ter uma view chamada 'dashboard.blade.php'
-})->name('dashboard');
+Route::middleware(['auth'])->group(function () {
+    Route::resource('produtos', ProdutoController::class);
+});
 
 // Rotas do CRUD de produtos (já usando o Resource Controller)
 Route::middleware(['auth'])->group(function () {

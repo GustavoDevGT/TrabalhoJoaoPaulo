@@ -37,7 +37,7 @@ class VerificacaoController extends Controller
         Auth::login($user);
 
         // Redireciona para o dashboard
-        return redirect()->route('dashboard');
+        return redirect()->route('produtos.index');
     }
 }
 

@@ -32,44 +32,28 @@ class ProdutoController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        // Validação dos dados
-        $request->validate([
-            'nome' => 'required|string|max:255',
-            'descricao' => 'nullable|string',
-            'preco' => 'required|numeric',
-            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', // Validação de imagem
-        ]);
+{
+    $request->validate([
+        'nome' => 'required|string|max:255',
+        'descricao' => 'nullable|string',
+        'preco' => 'required|numeric',
+        'imagem' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+    ]);
 
-        // Verifique se a imagem foi realmente enviada
-        if ($request->hasFile('imagem')) {
-            $imagem = $request->file('imagem');
-
-
-            // Define um nome único para a imagem
-            $nomeImagem = time() . '.' . $imagem->getClientOriginalExtension();
-
-            // Tente mover a imagem para o diretório de destino
-            try {
-                $imagem->move(public_path('storage/produtos'), $nomeImagem);
-            } catch (\Exception $e) {
-            }
-
-            // Armazenar o caminho da imagem
-            $imagemPath = 'storage/produtos/' . $nomeImagem;
-        }
-
-        // Cria o produto com o caminho da imagem
-        Produto::create([
-            'nome' => $request->nome,
-            'descricao' => $request->descricao,
-            'preco' => $request->preco,
-            'imagem' => $imagemPath ?? null, // Caso não haja imagem, salva null
-            'user_id' => auth()->id(),  // Associar ao usuário logado
-        ]);
-
-        return redirect()->route('produtos.index')->with('success', 'Produto criado com sucesso!');
+    if ($request->hasFile('imagem')) {
+        $imagemPath = $request->imagem->store('produtos', 'public');
     }
+
+    Produto::create([
+        'nome' => $request->nome,
+        'descricao' => $request->descricao,
+        'preco' => $request->preco,
+        'imagem' => $imagemPath ?? null,
+        'user_id' => auth()->id(),
+    ]);
+
+    return redirect()->route('produtos.index')->with('success', 'Produto criado com sucesso!');
+}
 
     /**
      * Display the specified resource.
